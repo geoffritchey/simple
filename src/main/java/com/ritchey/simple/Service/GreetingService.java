@@ -143,7 +143,7 @@ public class GreetingService {
 		return null;
 	}
 
-	public String getName(String peopleId) {
+	public ChapelPerson getChapelPerson(String peopleId) {
 		try {
 			LOGGER.debug("getName  " + peopleId);
 			if (peopleId.startsWith("P")) {
@@ -153,16 +153,12 @@ public class GreetingService {
 			example.createCriteria().andPeopleIdEqualTo(peopleId);
 			List<ChapelPerson> persons = chapelPersonMapper.selectByExample(example);
 			if (persons.size() > 0) {
-				ChapelPerson p = persons.get(0);
-				String name = p.getFirstname() + " " + p.getLastname();
-				LOGGER.debug("return " + name);
-				return name;
+				return persons.get(0);
+
 			}
-			LOGGER.debug("return ''");
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "";
+		return null;
 	}
 }

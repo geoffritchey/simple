@@ -397,7 +397,7 @@
   </update>
   
   
-    <select id="selectPresent" resultType="java.util.Map" parameterType="java.lang.String" >
+    <select id="selectPresent" resultType="java.util.Map" parameterType="map" >
 --present query
 select cast(se.starttime as date) as day, min(case when tardy = 0 then value when se.allcredit = 1 then e.attendanceValue else 0 end) as value
 from scheduledEvent se
@@ -409,7 +409,7 @@ group by campusId, se.event, cast(se.starttime as date)
 order by cast(se.starttime as date) desc
   </select>
   
-<select id="selectPresentCount" resultType="java.util.Map" parameterType="java.lang.String" >
+<select id="selectPresentCount" resultType="java.util.Map" parameterType="map" >
 select count(day) as count, coalesce(sum(value), 0) as total
 from (
   select cast(se.starttime as date) as day, min(case when tardy = 0 then value when se.allcredit = 1 then e.attendanceValue else 0 end) as value
@@ -422,7 +422,7 @@ group by campusId, se.event, cast(se.starttime as date)
 ) att
   </select>
   
-    <select id="selectTardy" resultType="java.util.Map" parameterType="java.lang.String" >
+    <select id="selectTardy" resultType="java.util.Map" parameterType="map" >
 --tardy query
 select cast(se.starttime as date) as day, min(value) as value
 from scheduledEvent se
@@ -434,7 +434,7 @@ group by campusId, se.event, cast(se.starttime as date)
 order by cast(se.starttime as date) desc
   </select>
   
-<select id="selectTardyCount" resultType="java.util.Map" parameterType="java.lang.String" >
+<select id="selectTardyCount" resultType="java.util.Map" parameterType="map" >
 select count(day) as count, coalesce(sum(value), 0) as total
 from (
 select cast(se.starttime as date) as day, min(value) as value
