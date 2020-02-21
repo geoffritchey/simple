@@ -98,11 +98,16 @@ public class GreetingService {
 				hours = (Integer) exemptionsMap.get("hoursRequired");
 			}
 			
-			List<Map> list = punchMapper.selectPresent(campusId, termStart, new RowBounds(offset, limit));
-			Map m = punchMapper.selectPresentCount(campusId, termStart);
+			List<Map> list = punchMapper.selectPresent(campusId, termStart);
+			double total = 0;
+			for (Map m: list) {
+				total = total + (Double) m.get("value");
+			}
+			
+			//Map m = punchMapper.selectPresentCount(campusId, termStart);
 			Map env = new HashMap();
-			ListCount<Map> ret = new ListCount(list, (Integer) m.get("count"), env);
-			ret.getEnv().put("total", m.get("total"));
+			ListCount<Map> ret = new ListCount(list, list.size(), env);
+			ret.getEnv().put("total", total);
 			ret.getEnv().put("goal", hours);
 			return ret;
 		} catch (Exception e) {
@@ -131,11 +136,15 @@ public class GreetingService {
 		Date termEnd = term.get("endDate");
 		try {
 			String campusId = peopleCodeId.replaceAll("[Pp]", "");
-			List<Map> list = punchMapper.selectTardy(campusId, termStart, new RowBounds(offset, limit));
-			Map m = punchMapper.selectTardyCount(campusId, termStart);
+			List<Map> list = punchMapper.selectTardy(campusId, termStart);
+			//Map m = punchMapper.selectTardyCount(campusId, termStart);
+			double total = 0;
+			for (Map m: list) {
+				total = (Double) m.get("value") + total;
+			}
 			Map env = new HashMap();
-			ListCount<Map> ret = new ListCount(list, (Integer) m.get("count"), env);
-			ret.getEnv().put("total", m.get("total"));
+			ListCount<Map> ret = new ListCount(list, list.size(), env);
+			ret.getEnv().put("total", total);
 			return ret;
 		} catch (Exception e) {
 			e.printStackTrace();

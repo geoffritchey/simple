@@ -22,17 +22,19 @@
 	</properties>
 
 	<dependencies>
+
 <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-ldap -->
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-ldap</artifactId>
+</dependency>
+
          <dependency>
                 <groupId>com.microsoft.jdbcdriver</groupId>
                 <artifactId>sqljdbc</artifactId>
-                <version>4.0</version>
+                <version>4.2</version>
         </dependency>
-		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-test</artifactId>
-		    <scope>test</scope>
-		</dependency>
 		<dependency>
 		    <groupId>commons-dbcp</groupId>
 		    <artifactId>commons-dbcp</artifactId>

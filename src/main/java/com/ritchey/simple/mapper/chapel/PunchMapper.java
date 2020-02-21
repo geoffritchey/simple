@@ -124,8 +124,10 @@ public interface PunchMapper {
     int updateByPrimaryKey(Punch record);
     
     List<Map> selectPresent(@Param("campusId") String campusId, @Param("startterm") Date startterm, RowBounds r);
+    List<Map> selectPresent(@Param("campusId") String campusId, @Param("startterm") Date startterm);
     Map selectPresentCount(@Param("campusId") String campusId, @Param("startterm") Date startterm);
     List<Map> selectTardy(@Param("campusId") String campusId, @Param("startterm") Date startterm, RowBounds r);
+    List<Map> selectTardy(@Param("campusId") String campusId, @Param("startterm") Date startterm);
     Map selectTardyCount(@Param("campusId") String campusId, @Param("startterm") Date startterm);
     
 }
