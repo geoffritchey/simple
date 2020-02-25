@@ -11,56 +11,71 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ritchey.ldap.LdapUserDetails;
 import com.ritchey.simple.Service.GreetingService;
 import com.ritchey.simple.Service.ListCount;
 import com.ritchey.simple.domain.chapel.ChapelPerson;
+
 
 @Controller
 @Scope(value="session")
 public class GreetingController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreetingController.class);
 	
-	
 	Map<String, Date> term = null;
 	String fullname = null;
 	String campusId = null;
+	
+	int presentCount = 0;
+	int tardyCount = 0;
+	Integer goal = 0;
+	
+
+	int presentOffset = 0;
+	int tardyOffset = 0;
+	int limit = 10;
+
 	
 	@Autowired
 	GreetingService service;
 	
 	@GetMapping("/greeting")
-	public String greeting(HttpServletRequest request
-			, @RequestParam(name="peopleid", required=false, defaultValue="World") String peopleId
+	public String create(HttpServletRequest request
+			, @RequestParam(name="peopleid", required=false, defaultValue="") String peopleId
 			, Model model) {
 
-		int presentOffset = 0;
-		int tardyOffset = 0;
-		int limit = 10;
-		
-		Boolean load = campusId != null && "World".equals(peopleId);
-
-		LOGGER.info("campusId = " + campusId);
-		LOGGER.info("peopleId = " + peopleId);	
-		LOGGER.info("load = " + load);	
-		if (!load) {
-			if ("World".equals(peopleId)) {
-				return "hello";
+		LOGGER.debug("people_id = " + peopleId);
+		if (!peopleId.matches("P?[0-9]{9}")) {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			if (!(authentication instanceof AnonymousAuthenticationToken) && peopleId.equals("")) {
+				LOGGER.debug("Not Anonymous");
+			    String currentUserName = authentication.getName();
+			    LdapUserDetails ldap = ((LdapUserDetails) authentication.getPrincipal());
+			    campusId = peopleId = ldap.getEmployeeId();
+			    LOGGER.debug("people id = " + peopleId);
 			}
 			else {
-				ChapelPerson person = service.getChapelPerson(peopleId);
-				
-				campusId = peopleId;
-				if (person == null) {
 					return "hello";
 				}
-				fullname = person.getFirstname() + " " + person.getLastname();
-			}
 		}
+
+		ChapelPerson person = service.getChapelPerson(peopleId);
+		
+		campusId = peopleId;
+		if (person == null) {
+			return "hello";
+		}
+		fullname = person.getFirstname() + " " + person.getLastname();
+			
 		
 		if (term == null) 
 			term = service.getStartTerm();
@@ -69,33 +84,47 @@ public class GreetingController {
 		LOGGER.info("term = " + term);
 		List<Map> presentDates = new ArrayList<Map>();
 		List<Map> tardyDates = new ArrayList<Map>();
-		int presentCount = 0;
-		int tardyCount = 0;
-		Integer goal = 0;
+
+
+		model.addAttribute("present_dates", presentDates);
+		model.addAttribute("tardy_dates", tardyDates);
 		
-		if (load) {
-			ListCount<Map> present = service.getPresent(campusId, term, presentOffset, limit);
-			LOGGER.info("present = " + present);
-			LOGGER.info("present = " + present.getCount());
-			for (Map x: present.getData()) {
-				LOGGER.info("x = " + x);
-			}
-			
-			ListCount<Map> tardy = service.getTardies(campusId, term, tardyOffset, limit);
-			LOGGER.info("tardy = " + tardy.getCount());
-			for (Map x: tardy.getData()) {
-				LOGGER.info("x = " + x);
-			}
-			
-			presentDates = present.getData();
-			tardyDates = tardy.getData();
-			
-			presentCount = present.getCount();
-			tardyCount = tardy.getCount();
-			
-			Map env = present.getEnv();
-			goal = (Integer) env.get("goal");
+		model.addAttribute("total", 0);
+		model.addAttribute("goal", 0);
+		model.addAttribute("present", 0);
+		model.addAttribute("tardy", 0);
+		model.addAttribute("fullname", fullname);
+		
+		
+		return "greeting";
+	}
+
+	
+	@GetMapping("/greetingload")
+	public String load(HttpServletRequest request
+			, Model model) {
+		ListCount<Map> present = service.getPresent(campusId, term, presentOffset, limit);
+		LOGGER.info("present = " + present);
+		LOGGER.info("present = " + present.getCount());
+		for (Map x: present.getData()) {
+			LOGGER.info("x = " + x);
 		}
+		
+		ListCount<Map> tardy = service.getTardies(campusId, term, tardyOffset, limit);
+		LOGGER.info("tardy = " + tardy.getCount());
+		for (Map x: tardy.getData()) {
+			LOGGER.info("x = " + x);
+		}
+		
+		List<Map> presentDates = present.getData();
+		List<Map> tardyDates = tardy.getData();
+		
+		presentCount = present.getCount();
+		tardyCount = tardy.getCount();
+		
+		Map env = present.getEnv();
+		goal = (Integer) env.get("goal");
+		
 		model.addAttribute("present_dates", presentDates);
 		model.addAttribute("tardy_dates", tardyDates);
 		
@@ -105,9 +134,7 @@ public class GreetingController {
 		model.addAttribute("tardy", tardyCount);
 		model.addAttribute("fullname", fullname);
 		
-		
 		return "greeting";
 	}
-
 
 }

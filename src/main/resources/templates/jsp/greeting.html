@@ -66,7 +66,11 @@
 												</tr>
 												<tr>
 													<td style="vertical-align: top;" align="left">
-													<table style="height: 400px;" cellspacing="0" cellpadding="0" >
+													<table style="height: 450px;" cellspacing="0" cellpadding="0" >
+														<colgroup>
+															<col style="width: 50%;">
+															<col style="width: 50%;">
+														</colgroup>
 															<tbody>
 																<tr>
 																	<td style="vertical-align: top;" align="left">
@@ -78,7 +82,7 @@
 																							__gwtcellbasedwidgetimpldispatchingfocus="true"
 																							__gwtcellbasedwidgetimpldispatchingblur="true"
 																							class="display stripe"
-																							style="width: 225px;" cellspacing="0">
+																							cellspacing="0">
 																							<colgroup>
 																								<col style="width: 50%;">
 																								<col style="width: 50%;">
@@ -88,8 +92,7 @@
 																									<th colspan="1"
 																										class="header firstHeader"
 																										__gwt_column="column-gwt-uid-13"
-																										__gwt_header="header-gwt-uid-14">Dates
-																										Present</th>
+																										__gwt_header="header-gwt-uid-14">Dates&nbsp;Present</th>
 																									<th colspan="1"
 																										class="header lastHeader"
 																										__gwt_column="column-gwt-uid-15"
@@ -238,7 +241,8 @@ function loadPage() {
 	console.log("x = " + x);
 	if (x === "0") {
 		console.log("redirect");
-		 window.location = "/greeting";
+		//window.location.replace("/greetingload");
+		setTimeout("location.href = '/greetingload';",1500);
 	}
 	else {
 		console.log("hide waiting");

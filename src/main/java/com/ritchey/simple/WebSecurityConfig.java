@@ -1,24 +1,23 @@
 package com.ritchey.simple;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configurers.provisioning.UserDetailsManagerConfigurer.UserDetailsBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import com.ritchey.ldap.MyUserDetailsContextMapper;
 
 @Configuration
+@PropertySource("file:build.properties")
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
@@ -29,11 +28,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 			.formLogin()
 				.loginPage("/login")
+				.defaultSuccessUrl("/greeting", true)
 				.permitAll()
 				.and()
 			.logout()
 				.permitAll();
 	}
+	
+	@Value("${ldap.bindUserDistinguishedName}")
+	String bindUserDistingushedName;
+	 
+    @Value("${ldap.bindUserPassword}")
+    private String bindUserPassword;
+    
+    @Value("${ldap.url}")
+    String ldapUrl;
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
 	protected GrantedAuthoritiesMapper getAuthoritiesMapper() throws Exception {
 		SimpleAuthorityMapper simpleAuthorityMapper = new SimpleAuthorityMapper();
@@ -44,12 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	  @Override
 	  public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		  String ldapUrl = "ldap://tyr.lcunet.lcu.edu:389/";
-		  String bindUserDistingushedName = "CN=spamuser,CN=Users,DC=lcunet,DC=lcu,DC=edu";
-		  String bindUserPassword = "B@rracuda123";
 
-	
-		
 		auth
 	      .ldapAuthentication()
 	      	.userSearchBase("OU=LCU,DC=lcunet,DC=lcu,DC=edu")

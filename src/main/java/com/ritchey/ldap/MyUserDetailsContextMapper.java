@@ -21,9 +21,10 @@ public class MyUserDetailsContextMapper implements UserDetailsContextMapper {
 	private String[] roleAttributes = null;
 	private String[] userAttributes = null;
 	private boolean convertToUpperCase = true;
-	private String id = null;
-	private String givenNameAttribute = null;
-	private String surnameAttribute = null;
+	private String id = "employeeId";
+	private String givenNameAttribute = "g";
+	private String surnameAttribute = "sn";
+	private String mailAttribute = "userPrincipalName";
 
 	public void setSurnameAttribute(String surname) {
 		this.surnameAttribute = surname;
@@ -34,29 +35,8 @@ public class MyUserDetailsContextMapper implements UserDetailsContextMapper {
 		this.givenNameAttribute = givenName;
 	}
 
-	private String mailAttribute = null;
 	private String role = null;
-//	private PeopleManager peopleMgr = null;
-//	private JobManager jobMgr = null;
-//	private UserLogManager userMgr = null;
-//	    
-//	public void setPeopleManager (PeopleManager peopleMgr) {
-//		this.peopleMgr = peopleMgr;
-//	}
-//	
-//	public void setJobManager (JobManager job) {
-//		this.jobMgr = job;
-//	}
-//	
-//	public void setUserLogManager(UserLogManager userMgr) {
-//		this.userMgr = userMgr;
-//	}
 
-
-//	@Override
-//	public void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
-//		
-//	}
 	
 	/**
      * Extension point to allow customized creation of the user's password from
@@ -168,7 +148,9 @@ public class MyUserDetailsContextMapper implements UserDetailsContextMapper {
 			String username, Collection<? extends GrantedAuthority> authorities) {
         String dn = ctx.getNameInNamespace();
 
+        
         log.debug("Mapping user details from context with DN: " + dn);
+        log.debug("context = " + ctx);
 
         LdapUserDetails.Essence essence = new LdapUserDetails.Essence();
         essence.setDn(dn);
@@ -187,34 +169,36 @@ public class MyUserDetailsContextMapper implements UserDetailsContextMapper {
         String givenName = null;
         String surname = null;
         //Attributes all = new BasicAttributes(true); 
-        for (String atts: userAttributes) {
+        for (String atts: new String[] {id, mailAttribute, givenNameAttribute, surnameAttribute}) {
+        	log.debug("atts = " + atts);
         	String[] values = ctx.getStringAttributes(atts);
-        	for (int i = 0; i < values.length; i++) {
-        		log.debug(atts + " [" + i + "]: " + values[i]);
-        		if (atts != null && atts.equals(id)) {
-        			employeeId = values[0];
-        			log.debug("Set employeeID to " + employeeId);
-        			essence.setEmployeeId(employeeId);
-        			Thread.dumpStack();
-        		}
-        		if (atts != null && atts.equals(mailAttribute)) {
-        			email = values[0];
-        			log.debug("Set email to " + email);
-        			essence.setMail(email);
-        			log.debug("done email");
-        		}
-        		if (atts != null && atts.equals(givenNameAttribute)) {
-        			givenName = values[0];
-        			log.debug("Set givenName to " + givenNameAttribute);
-        			essence.setGivenName(givenName);
-        			log.debug("done givenName");
-        		}
-        		if (atts != null && atts.equals(surnameAttribute)) {
-        			surname = values[0];
-        			log.debug("Set surname to " + surname);
-        			essence.setSurname(surname);
-        			log.debug("done surname");
-        		}
+        	if (values != null) {
+	        	for (int i = 0; i < values.length; i++) {
+	        		log.debug(atts + " [" + i + "]: " + values[i]);
+	        		if (atts != null && atts.equals(id)) {
+	        			employeeId = values[0];
+	        			log.debug("Set employeeID to " + employeeId);
+	        			essence.setEmployeeId(employeeId);
+	        		}
+	        		if (atts != null && atts.equals(mailAttribute)) {
+	        			email = values[0];
+	        			log.debug("Set email to " + email);
+	        			essence.setMail(email);
+	        			log.debug("done email");
+	        		}
+	        		if (atts != null && atts.equals(givenNameAttribute)) {
+	        			givenName = values[0];
+	        			log.debug("Set givenName to " + givenNameAttribute);
+	        			essence.setGivenName(givenName);
+	        			log.debug("done givenName");
+	        		}
+	        		if (atts != null && atts.equals(surnameAttribute)) {
+	        			surname = values[0];
+	        			log.debug("Set surname to " + surname);
+	        			essence.setSurname(surname);
+	        			log.debug("done surname");
+	        		}
+	        	}
         	}
         }
         System.err.println("ADD anon and active");
