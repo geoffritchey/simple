@@ -35,8 +35,8 @@ public class GreetingController {
 	String fullname = null;
 	String campusId = null;
 	
-	int presentCount = 0;
-	int tardyCount = 0;
+	Double presentSum = 0D;
+	Double tardySum = 0D;
 	Integer goal = 0;
 	
 
@@ -106,21 +106,23 @@ public class GreetingController {
 		ListCount<Map> present = service.getPresent(campusId, term, presentOffset, limit);
 		LOGGER.info("present = " + present);
 		LOGGER.info("present = " + present.getCount());
+		presentSum = 0D;
 		for (Map x: present.getData()) {
 			LOGGER.info("x = " + x);
+			presentSum += (Double) x.get("value");
 		}
 		
 		ListCount<Map> tardy = service.getTardies(campusId, term, tardyOffset, limit);
 		LOGGER.info("tardy = " + tardy.getCount());
+		tardySum = 0D;
 		for (Map x: tardy.getData()) {
 			LOGGER.info("x = " + x);
+			tardySum += (Double) x.get("value");
 		}
 		
 		List<Map> presentDates = present.getData();
 		List<Map> tardyDates = tardy.getData();
-		
-		presentCount = present.getCount();
-		tardyCount = tardy.getCount();
+	
 		
 		Map env = present.getEnv();
 		goal = (Integer) env.get("goal");
@@ -128,10 +130,10 @@ public class GreetingController {
 		model.addAttribute("present_dates", presentDates);
 		model.addAttribute("tardy_dates", tardyDates);
 		
-		model.addAttribute("total",presentCount+tardyCount);
+		model.addAttribute("total",presentSum+tardySum);
 		model.addAttribute("goal", goal);
-		model.addAttribute("present", presentCount);
-		model.addAttribute("tardy", tardyCount);
+		model.addAttribute("present", presentSum);
+		model.addAttribute("tardy", tardySum);
 		model.addAttribute("fullname", fullname);
 		
 		return "greeting";
