@@ -36,6 +36,14 @@
                 <artifactId>sqljdbc</artifactId>
                 <version>4.2</version>
         </dependency>
+<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-dbcp -->
+<dependency>
+    <groupId>org.apache.tomcat</groupId>
+    <artifactId>tomcat-dbcp</artifactId>
+    <version>10.0.0-M1</version>
+</dependency>
+
+        
 		<dependency>
 		    <groupId>commons-dbcp</groupId>
 		    <artifactId>commons-dbcp</artifactId>
@@ -143,7 +151,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
     				<addResources>true</addResources>
-					<jvmArguments>-Djava.naming.factory.initial=com.ritchey.naming.InitialContextFactory</jvmArguments>
+					<!-- jvmArguments>-Djava.naming.factory.initial=com.ritchey.naming.InitialContextFactory</jvmArguments-->
 				</configuration>
 			</plugin>
 			

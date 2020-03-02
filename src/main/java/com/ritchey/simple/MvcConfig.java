@@ -3,6 +3,8 @@ package com.ritchey.simple;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -13,6 +15,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MvcConfig.class);
 	
 
     @Autowired
@@ -40,5 +43,7 @@ public class MvcConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 	    //registry.addResourceHandler("/resources/**").addResourceLocations("/lcuTheme/");
 	}
+	
+
 
 }

@@ -1,7 +1,19 @@
 package com.ritchey.simple;
 
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.sql.DataSource;
+
+import org.apache.catalina.Context;
+import org.apache.catalina.startup.Tomcat;
+import org.apache.tomcat.util.descriptor.web.ContextResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.embedded.tomcat.TomcatWebServer;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -17,9 +29,22 @@ import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
 import com.ritchey.ldap.MyUserDetailsContextMapper;
 
 @Configuration
-@PropertySource("file:build.properties")
+@PropertySource(value="file:build.properties", ignoreResourceNotFound=true)
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
+
+	
+	@Value("${ldap.bindUserDistinguishedName}")
+	String bindUserDistingushedName;
+	 
+    @Value("${ldap.bindUserPassword}")
+    private String bindUserPassword;
+    
+    @Value("${ldap.url}")
+    String ldapUrl;
+    
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
@@ -34,15 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.logout()
 				.permitAll();
 	}
-	
-	@Value("${ldap.bindUserDistinguishedName}")
-	String bindUserDistingushedName;
-	 
-    @Value("${ldap.bindUserPassword}")
-    private String bindUserPassword;
-    
-    @Value("${ldap.url}")
-    String ldapUrl;
+
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
