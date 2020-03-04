@@ -109,7 +109,7 @@ public class InitialContextFactory implements javax.naming.spi.InitialContextFac
 
             String databaseNames = properties.getProperty("database.jndi.names");
             if (databaseNames == null) {
-                Log.warn(new RuntimeException("database.jndi.names is not defined in build.properties as a comma separated list in build.properties"));
+                LOGGER.warn("database.jndi.names is not defined in build.properties as a comma separated list in build.properties", new RuntimeException());
                 return ctx;
             }
 
@@ -196,7 +196,7 @@ public class InitialContextFactory implements javax.naming.spi.InitialContextFac
         }
         String value = (String) properties.getProperty(name);
         if (value == null) {
-            Log.warn(new RuntimeException(name + " is not defined in build.properties"));
+            LOGGER.warn(name + " is not defined in build.properties", new RuntimeException());
         }
         return value;
     }
