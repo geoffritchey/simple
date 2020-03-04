@@ -208,6 +208,9 @@ td.contacts-ListName {
   border: 2px outset;
   background-color: white;
   padding: 10px;
+  	width: 400px;
+  border: 0;
+
 }
 
 .gwt-DecoratorPanel .middleCenter {
@@ -221,6 +224,23 @@ td.contacts-ListName {
 
 a:hover.login {
 	color: white;
+}
+
+.Caption {
+	background: #e3e8f3 url(images/hborder.png) repeat-x 0px -2003px;
+	padding: 4px 4px 4px 8px;
+	cursor: default;
+	border-bottom: 1px solid #bbbbbb;
+	border-top: 5px solid #d0e4f6;
+}
+
+.dialogTopLeft {
+    background: url(images/corner.png) no-repeat -13px 0px;
+}
+
+.dialogMiddleLeft {
+    background: url(images/vborder.png) repeat-y;
+
 }
 
 .login {
@@ -251,5 +271,55 @@ a:hover.login {
 
 .gwt-TabPanelBottom {
 	background: #f0f0f0;
+}
+
+
+.gwt-DecoratorPanel .middleCenter {
+   height: 100%;
+   width: 100%;
+   background-color: whitesmoke;
+ }
+.gwt-Label-Error {
+	color: red;
+}
+
+
+
+.currentWorkingPerson {
+	position: absolute;
+  top: 125px;
+  font-weight: bold;
+  color: white;
+
+}
+
+
+/**
+ * The file contains styles for GWT widgets in the standard theme.
+ */
+
+body, table td, select {
+  font-family: Arial Unicode MS, Arial, sans-serif;
+  font-size: small;
+}
+pre {
+  font-family: "courier new", courier;
+  font-size: small;
+}
+body {
+  color: black;
+  margin: 0px;
+  border: 0px;
+  padding: 0px;
+  background: #fff;
+  direction: ltr;
+}
+a, a:visited, a:hover {
+  color: #0000AA;
+}
+
+.title-padding {
+	margin-top: 6px;
+	margin-bottom: 6px;
 }
 

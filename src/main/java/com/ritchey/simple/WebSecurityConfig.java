@@ -1,23 +1,13 @@
 package com.ritchey.simple;
 
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.sql.DataSource;
-
-import org.apache.catalina.Context;
-import org.apache.catalina.startup.Tomcat;
-import org.apache.tomcat.util.descriptor.web.ContextResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.embedded.tomcat.TomcatWebServer;
-import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.jndi.JndiTemplate;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,20 +19,9 @@ import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
 import com.ritchey.ldap.MyUserDetailsContextMapper;
 
 @Configuration
-@PropertySource(value="file:build.properties", ignoreResourceNotFound=true)
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
-
-	
-	@Value("${ldap.bindUserDistinguishedName}")
-	String bindUserDistingushedName;
-	 
-    @Value("${ldap.bindUserPassword}")
-    private String bindUserPassword;
-    
-    @Value("${ldap.url}")
-    String ldapUrl;
     
 	
 	@Override
@@ -50,6 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers("/", "/home").authenticated()
+				.antMatchers("/greetingload").permitAll()
 				.and()
 			.formLogin()
 				.loginPage("/login")
@@ -76,6 +56,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	  @Override
 	  public void configure(AuthenticationManagerBuilder auth) throws Exception {
 
+		  JndiTemplate template = new JndiTemplate();
+		  String ldapUrl = template.lookup("java:comp/env/ldap/url", String.class);
+		  String bindUserPassword = template.lookup("java:comp/env/ldap/bindUserPassword", String.class);
+		  String bindUserDistingushedName = template.lookup("java:comp/env/ldap/bindUserDistinguishedName", String.class);
+		  
+		  LOGGER.debug("ldap url = " + ldapUrl);
 		auth
 	      .ldapAuthentication()
 	      	.userSearchBase("OU=LCU,DC=lcunet,DC=lcu,DC=edu")
