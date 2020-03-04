@@ -151,7 +151,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
     				<addResources>true</addResources>
-					<!-- jvmArguments>-Djava.naming.factory.initial=com.ritchey.naming.InitialContextFactory</jvmArguments-->
+					<jvmArguments>-Djava.naming.factory.initial=com.ritchey.naming.InitialContextFactory</jvmArguments>
 				</configuration>
 			</plugin>
 			

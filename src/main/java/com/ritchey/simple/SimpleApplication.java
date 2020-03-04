@@ -11,6 +11,8 @@ import javax.sql.DataSource;
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.naming.NamingContext;
+import org.apache.tomcat.util.descriptor.web.ContextEnvironment;
 import org.apache.tomcat.util.descriptor.web.ContextResource;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -43,32 +45,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class SimpleApplication  {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationErrorListener.class);
     
-    
-   @Value("${database.chapel.driver}")
-   String chapelDriver;
-   
-   @Value("${database.chapel.url}")
-	private String databaseUrl;
-
-   @Value("${database.chapel.user}")
-	private String databaseUsername;
-
-   @Value("${database.chapel.password}")
-	private String databasePassword;
-   
-   @Value("${database.powerCampus.driver}")
-   String campusDriver;
-   
-   @Value("${database.powerCampus.url}")
-	private String campusUrl;
-
-   @Value("${database.powerCampus.user}")
-	private String campusUsername;
-
-   @Value("${database.powerCampus.password}")
-	private String campusPassword;
-   
-    
+        
 	public static void main(String[] args) throws NamingException {
 		SpringApplication application = new SpringApplication(SimpleApplication.class);
 		application.addListeners(new ApplicationPidFileWriter());
@@ -100,8 +77,9 @@ public class SimpleApplication  {
 	            }
 	        };
 	   }
-	  
 	   
+	   /*
+
 		@Bean
 		public TomcatServletWebServerFactory servletContainerFactory() {
 		    return new TomcatServletWebServerFactory() {
@@ -148,9 +126,21 @@ public class SimpleApplication  {
 		    	
 		    	@Override
 		    	protected void postProcessContext(Context context) {
-		    	    
 		    		addResource(context, "jdbc/chapel", DataSource.class.getName(), chapelDriver, databaseUrl, databaseUsername, databasePassword);
 		    		addResource(context, "jdbc/powerCampus", DataSource.class.getName(), campusDriver, campusUrl, campusUsername, campusPassword);
+	
+		    		addEnvironment(context, "ldap_bindUserDistinguishedName", String.class.getName(), bindUserDistingushedName);
+		    		addEnvironment(context, "ldap_bindUserPassword", String.class.getName(), bindUserPassword);
+		    		addEnvironment(context, "ldap_url", String.class.getName(), ldapUrl);
+		    	}
+		    	
+		    	protected void addEnvironment(Context context, String jndiName, String type, String value) {
+		    		ContextEnvironment environment = new ContextEnvironment();
+		    		environment.setName(jndiName);
+		    		environment.setType(type);
+		    		environment.setValue(value);
+		    		LOGGER.debug(String.format("env name type value = %s, %s, %s", jndiName,  type, value));
+		    		context.getNamingResources().addEnvironment(environment);
 		    	}
 		    	
 		    	protected void addResource(Context context, String jndiName, String type, String driver, String url, String user, String password) {
@@ -166,7 +156,7 @@ public class SimpleApplication  {
 		    
 		    };
 		}
-	   
+		*/
 
 	
 	@Bean

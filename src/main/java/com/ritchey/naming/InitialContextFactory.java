@@ -18,11 +18,15 @@ import java.io.FileInputStream;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import javax.naming.Binding;
 import javax.naming.Context;
 import javax.naming.NameAlreadyBoundException;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
 import org.apache.naming.NamingContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*------------------------------------------------*/    
 /**
@@ -51,6 +55,7 @@ database.forms.url=jdbc:sqlserver://kindness;ServerName=kindness.lcunet.lcu.edu\
  */
 public class InitialContextFactory implements javax.naming.spi.InitialContextFactory
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(InitialContextFactory.class);
     /*------------------------------------------------*/    
     /**
      * Get Context that has access to default Namespace.
@@ -63,8 +68,20 @@ public class InitialContextFactory implements javax.naming.spi.InitialContextFac
      */
     public Context getInitialContext(Hashtable env)
     {
-        Context ctx = new NamingContext(env, "myContext");
+    	
+        Context root = new NamingContext(env, "myContext");
 
+        Context comp = null;
+        Context ctx = null;
+		try {
+			comp = root.createSubcontext("java:comp");
+			ctx = comp.createSubcontext("env");
+		} catch (NamingException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
+        
         try {
             Properties properties = new Properties();
             try {
@@ -103,7 +120,25 @@ public class InitialContextFactory implements javax.naming.spi.InitialContextFac
             e.printStackTrace();
         }
 
-        return ctx;
+        try {
+            NamingEnumeration<Binding> x =  root.listBindings("java:comp/env/jdbc");
+            LOGGER.debug("list binding jdbc");
+            while ( x.hasMore()) {
+                Binding binding = x.next();
+                LOGGER.debug("binding: " + binding.getName());
+            }
+            LOGGER.debug("DONE list binding jdbc");
+            LOGGER.debug("GEOFF ldap initial context");
+            NamingEnumeration<Binding> ldapBindings = root.listBindings("java:comp/env/ldap");
+			while (ldapBindings.hasMore()) {
+                Binding binding = ldapBindings.next();
+                LOGGER.debug("binding: " + binding.getName());
+            }
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+        
+        return root;
     }
     
     public void createLdapStrings(Properties properties, Context ldap) throws NamingException {
@@ -113,10 +148,11 @@ public class InitialContextFactory implements javax.naming.spi.InitialContextFac
 			ldap.bind("url", getValue(isDatabase,"url", "ldap", properties));
 			ldap.bind("bindUserDistinguishedName", getValue(isDatabase,"bindUserDistinguishedName", "ldap", properties));
 			ldap.bind("bindUserPassword", getValue(isDatabase,"bindUserPassword", "ldap", properties));
-			
+			/*
 			ldap.bind("usersSearchRoot", getValue(isDatabase,"usersSearchRoot", "ldap", properties));
 			ldap.bind("groupsSearchRoot", getValue(isDatabase,"groupsSearchRoot", "ldap", properties));
 			ldap.bind("groupsSearchRootSecondary", getValue(isDatabase,"groupsSearchRootSecondary", "ldap", properties));
+			*/
 		} catch (NameAlreadyBoundException e) {
 			// Quietly suppress NameAlreadyBound Exception
 		}

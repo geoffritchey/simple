@@ -1,20 +1,202 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <title>Spring Security Example </title>
-    </head>
-    <body>
-        <div th:if="${param.error}">
-            Invalid username and password.
-        </div>
-        <div th:if="${param.logout}">
-            You have been logged out.
-        </div>
-        <form th:action="@{/login}" method="post">
-            <div><label> User Name : <input type="text" name="username"/> </label></div>
-            <div><label> Password: <input type="password" name="password"/> </label></div>
-            <div><input type="submit" value="Sign In"/></div>
-        </form>
-    </body>
+<html>
+
+<head>
+<title>Check Chapel Status</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="clean.css" rel="stylesheet" >
+<link href="standard.css" rel="stylesheet" >
+<link href="Chapel.css" rel="stylesheet" >
+
+</head>
+
+<body>
+
+	<!-- OPTIONAL: include this if you want history support -->
+	<iframe src="javascript:''" id="__gwt_historyFrame" tabindex="-1"
+		style="position: absolute; width: 0; height: 0; border: 0"></iframe>
+
+	<!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+	<noscript>
+		<div
+			style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+			Your web browser must have JavaScript enabled in order for this
+			application to display correctly.</div>
+	</noscript>
+
+	<div id="container">
+		<div id="header">
+			<div id="logo"></div>
+		</div>
+		<div id="content">
+			<table cellspacing="0" cellpadding="0">
+				<tbody>
+					<tr>
+						<td style="vertical-align: top;" align="left"><table
+								cellspacing="0" cellpadding="0">
+								<tbody>
+									<tr>
+										<td style="vertical-align: top;" align="left"><table
+												cellspacing="0" cellpadding="0">
+												<tbody>
+													<tr>
+														<td style="vertical-align: top;" align="left"><div
+																class="gwt-Label currentWorkingPerson">Unset
+																Person</div></td>
+													</tr>
+												</tbody>
+											</table></td>
+									</tr>
+									<tr>
+										<td style="vertical-align: top;" align="left"><table
+												class="gwt-TabBar" role="tablist" cellspacing="0"
+												cellpadding="0">
+												<tbody>
+													<tr>
+														<td style="vertical-align: bottom;"
+															class="gwt-TabBarFirst-wrapper" height="100%"
+															align="left"><div class="gwt-TabBarFirst"
+																style="white-space: normal; height: 100%;">&nbsp;</div></td>
+														<td style="vertical-align: bottom;"
+															class="gwt-TabBarRest-wrapper" width="100%" align="left"><div
+																class="gwt-TabBarRest"
+																style="white-space: normal; height: 100%;">&nbsp;</div></td>
+													</tr>
+												</tbody>
+											</table></td>
+									</tr>
+									<tr>
+										<td style="vertical-align: top;" align="left"><div></div></td>
+									</tr>
+								</tbody>
+							</table></td>
+						<td style="vertical-align: top;" align="left"><table
+								class="gwt-DecoratedStackPanel" style="width: 200px;"
+								cellspacing="0" cellpadding="0">
+								<tbody></tbody>
+							</table></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+
+	<iframe src="javascript:&quot;&quot;" id="chapelManage"
+		style="position: absolute; width: 0px; height: 0px; border: medium none; left: -1000px; top: -1000px;"
+		tabindex="-1"></iframe>
+	<div
+		style="left: 567px; top: 443px; visibility: visible; position: absolute; overflow: visible;"
+		class="gwt-DialogBox">
+		<div class="">
+		<form th:action="@{/login}" method="post">
+			<table class="" cellspacing="0" cellpadding="0">
+				<tbody>
+					<tr class="dialogTop">
+						<td class="dialogTopLeft"><div class="dialogTopLeftInner"></div></td>
+						<td class="dialogTopCenter"><div class="dialogTopCenterInner">
+								<div class="Caption">Chapel Login</div>
+							</div></td>
+						<td class="dialogTopRight"><div class="dialogTopRightInner"></div></td>
+					</tr>
+					<tr class="dialogMiddle">
+						<td class="dialogMiddleLeft"><div
+								class="dialogMiddleLeftInner"></div></td>
+						<td class="dialogMiddleCenter"><div
+								class="dialogMiddleCenterInner dialogContent">
+								<table cellspacing="0" cellpadding="0">
+									<tbody>
+										<tr>
+											<td style="vertical-align: top;" align="left"><table
+													style="width: 100%;" cellspacing="0" cellpadding="0">
+													<tbody>
+														<tr>
+															<td style="vertical-align: top;" align="center"><div
+																	class="title-padding">Use your LCU campus email
+																	name (without '@lcu.edu') to login.</div>
+															       <div th:if="${param.error}">
+															            Invalid username and password.
+															        </div>
+															        <div th:if="${param.logout}">
+															            You have been logged out.
+															        </div>
+															        </td>
+														</tr>
+													</tbody>
+												</table></td>
+										</tr>
+										<tr>
+											<td style="vertical-align: top;" align="left"><table
+													style="width: 209px; height: 43px;">
+													<colgroup>
+														<col>
+														<col>
+													</colgroup>
+													<tbody>
+														<tr>
+							
+															<td><div class="gwt-Label" style="width: 118px;">User
+																	Name:</div></td>
+															<td><input type="text" class="gwt-TextBox"
+																style="width: 203px;" name="username"></td>
+														</tr>
+														<tr>
+															<td><div class="gwt-Label">Password:</div></td>
+															<td><input type="password" name="password"
+																class="gwt-PasswordTextBox" style="width: 202px;" ></td>
+														</tr>
+														<tr>
+															<td>&nbsp;</td>
+															<td>&nbsp;</td>
+														</tr>
+													</tbody>
+												</table></td>
+										</tr>
+										<tr>
+											<td style="vertical-align: top;" align="left"><table
+													class="contacts-ListRow td" cellspacing="0" cellpadding="0">
+													<tbody>
+														<tr>
+															<td style="vertical-align: top;" align="left">
+															<input class="gwt-Button" type="submit" value="Sign In"/>
+															</td>
+															<td style="vertical-align: top;" align="left"><div
+																	class="gwt-Label-Error"
+																	style="width: 210px; height: 50px;"></div></td>
+														</tr>
+													</tbody>
+												</table></td>
+										</tr>
+										<tr>
+											<td style="vertical-align: top;" align="left"><table
+													cellspacing="0" cellpadding="0">
+													<tbody>
+														<tr>
+															<td style="vertical-align: top;" align="left"><div
+																	class="gwt-Label">Current students should have an
+																	active directory login and password. Contact the help
+																	desk if you don't know yours. [Version=3.4.21]</div></td>
+														</tr>
+													</tbody>
+												</table></td>
+										</tr>
+									</tbody>
+								</table>
+							</div></td>
+						<td class="dialogMiddleRight"><div
+								class="dialogMiddleRightInner"></div></td>
+					</tr>
+					<tr class="dialogBottom">
+						<td class="dialogBottomLeft"><div
+								class="dialogBottomLeftInner"></div></td>
+						<td class="dialogBottomCenter"><div
+								class="dialogBottomCenterInner"></div></td>
+						<td class="dialogBottomRight"><div
+								class="dialogBottomRightInner"></div></td>
+					</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+	</div>
+</body>
 </html>
