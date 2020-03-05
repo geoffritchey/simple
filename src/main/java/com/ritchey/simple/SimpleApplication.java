@@ -12,6 +12,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,6 +22,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
 import org.springframework.jndi.JndiTemplate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -32,6 +34,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class SimpleApplication  {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationErrorListener.class);
     
+	static public String version = "77777";
+
         
 	public static void main(String[] args) throws NamingException {
 		SpringApplication application = new SpringApplication(SimpleApplication.class);
@@ -39,7 +43,6 @@ public class SimpleApplication  {
 		application.addListeners(new ApplicationErrorListener());
 		application.addListeners(new ApplicationShutdown());
 		ApplicationContext ctx = application.run();
-		
 
 		System.err.println("Let's inspect the beans provided by Spring Boot:");
 

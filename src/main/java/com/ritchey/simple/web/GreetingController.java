@@ -11,13 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ritchey.ldap.LdapUserDetails;
@@ -30,6 +30,7 @@ import com.ritchey.simple.domain.chapel.ChapelPerson;
 @Scope(value="session")
 public class GreetingController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GreetingController.class);
+
 	
 	Map<String, Date> term = null;
 	String fullname = null;
