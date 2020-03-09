@@ -122,17 +122,12 @@ public class InitialContextFactory implements javax.naming.spi.InitialContextFac
 
         try {
             NamingEnumeration<Binding> x =  root.listBindings("java:comp/env/jdbc");
-            LOGGER.debug("list binding jdbc");
             while ( x.hasMore()) {
                 Binding binding = x.next();
-                LOGGER.debug("binding: " + binding.getName());
             }
-            LOGGER.debug("DONE list binding jdbc");
-            LOGGER.debug("GEOFF ldap initial context");
             NamingEnumeration<Binding> ldapBindings = root.listBindings("java:comp/env/ldap");
 			while (ldapBindings.hasMore()) {
                 Binding binding = ldapBindings.next();
-                LOGGER.debug("binding: " + binding.getName());
             }
         } catch (NamingException e) {
             e.printStackTrace();

@@ -29,6 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 				.antMatchers("/", "/home").authenticated()
 				.antMatchers("/greetingload").permitAll()
+				.antMatchers("/rest").permitAll()
 				.and()
 			.formLogin()
 				.loginPage("/login")
@@ -37,6 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 			.logout()
 				.permitAll();
+			
 	}
 
 
