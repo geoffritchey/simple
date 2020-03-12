@@ -29,3 +29,18 @@ build/
 
 ### VS Code ###
 .vscode/
+
+.mvn/
+application.pid
+build.properties
+k
+mvnw
+mvnw.cmd
+node_modules/
+package-lock.json
+package.json
+shutdown.sh
+simple.war
+url.txt
+webpack.config.js
+webpack.generated.js
