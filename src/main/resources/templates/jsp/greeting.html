@@ -37,7 +37,8 @@
 												</tr>
 												<tr>
 													<td style="vertical-align: top;" align="left"><div
-															class="title">For <span th:text="${fullname}"/></div></td>
+														class="title">For <span th:text="${fullname}"/>  <span id="campusId" th:text="${campusId}"/></div></td>
+														
 												</tr>
 												<tr>
 													<td style="vertical-align: top;" align="left">
@@ -230,6 +231,7 @@
 			</tr>
 		</tbody>
 	</table>
+	<div id="feedback"></div>
 </div>
 </div>
 
@@ -237,12 +239,15 @@
 function loadPage() {
 	//alert("page is loaded");
 	 
-	var x = document.getElementById("goal").innerHTML;
+	
+	fire_ajax_submit();
+	var x = $("#goal").html();
 	console.log("x = " + x);
 	if (x === "0") {
 		console.log("redirect");
 		//window.location.replace("/greetingload");
-		setTimeout("location.href = 'greetingload';",1500);
+		//setTimeout("location.href = 'greetingload';",1500);
+		
 	}
 	else {
 		console.log("hide waiting");
@@ -261,54 +266,18 @@ function loadPage() {
   
 }
 
-$(document).ready(function () {
-
-    $("#search-form").submit(function (event) {
-
-        //stop submit the form, we will post it manually.
-        event.preventDefault();
-
-        fire_ajax_submit();
-
-    });
-
-});
-
 function fire_ajax_submit() {
 
-    var search = {}
-    search["username"] = $("#username").val();
-
-    $("#btn-search").prop("disabled", true);
+    var campusId = $("#campusId").html();
+    var url = "/greeting/" + campusId;
 
     $.ajax({
-        type: "POST",
-        contentType: "application/json",
-        url: "/api/search",
-        data: JSON.stringify(search),
-        dataType: 'json',
-        cache: false,
-        timeout: 600000,
-        success: function (data) {
-
+    	url: url,
+    	success: function(data) {
             var json = "<h4>Ajax Response</h4>&lt;pre&gt;"
                 + JSON.stringify(data, null, 4) + "&lt;/pre&gt;";
             $('#feedback').html(json);
-
-            console.log("SUCCESS : ", data);
-            $("#btn-search").prop("disabled", false);
-
-        },
-        error: function (e) {
-
-            var json = "<h4>Ajax Response</h4>&lt;pre&gt;"
-                + e.responseText + "&lt;/pre&gt;";
-            $('#feedback').html(json);
-
-            console.log("ERROR : ", e);
-            $("#btn-search").prop("disabled", false);
-
-        }
+    	}
     });
 
 }

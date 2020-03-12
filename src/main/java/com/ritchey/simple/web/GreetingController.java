@@ -11,14 +11,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ritchey.ldap.LdapUserDetails;
 import com.ritchey.simple.Service.GreetingService;
@@ -90,6 +91,8 @@ public class GreetingController {
 		model.addAttribute("present_dates", presentDates);
 		model.addAttribute("tardy_dates", tardyDates);
 		
+		model.addAttribute("campusId", campusId);
+		
 		model.addAttribute("total", 0);
 		model.addAttribute("goal", 0);
 		model.addAttribute("present", 0);
@@ -139,5 +142,35 @@ public class GreetingController {
 		
 		return "greeting";
 	}
-
+	
+	@ResponseBody
+	  @GetMapping("/greeting/{campusId}")
+	  History one(@PathVariable String campusId) {
+			if (term == null) 
+				term = service.getStartTerm();
+			
+		  History ret = new History();
+		  ListCount<Map> present = service.getPresent(campusId, term, presentOffset, limit);
+			presentSum = 0D;
+			for (Map x: present.getData()) {
+				LOGGER.info("x = " + x);
+				presentSum += (Double) x.get("value");
+			}
+			ret.setPresentDates(present.getData());
+			ret.setPresentSum(presentSum);
+			ListCount<Map> tardy = service.getTardies(campusId, term, tardyOffset, limit);
+			LOGGER.info("tardy = " + tardy.getCount());
+			tardySum = 0D;
+			for (Map x: tardy.getData()) {
+				LOGGER.info("x = " + x);
+				tardySum += (Double) x.get("value");
+			}
+			ret.setTardyDates(tardy.getData());
+			ret.setTardySum(tardySum);
+			
+			Map env = present.getEnv();
+			goal = (Integer) env.get("goal");
+			ret.setGoal(goal);
+	    return ret;
+	  }
 }
