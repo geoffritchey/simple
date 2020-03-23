@@ -47,7 +47,7 @@
 																<tr>
 																	<td style="vertical-align: top;" align="left"><div
 																			class="gwt-Label" style="width: 127px;">Total:
-																			<span th:text="${total}"/></div></td>
+																			<span id="total" th:text="${total}"/></div></td>
 																</tr>
 																<tr>
 																	<td style="vertical-align: top;" align="left"><div
@@ -55,11 +55,11 @@
 																</tr>
 																<tr>
 																	<td style="vertical-align: top;" align="left"><div
-																			class="pad">Present: <span th:text="${present}"/></div></td>
+																			class="pad">Present: <span id="present_sum" th:text="${present}"/></div></td>
 																</tr>
 																<tr>
 																	<td style="vertical-align: top;" align="left"><div
-																			class="pad">Tardy: <span th:text="${tardy}"/></div></td>
+																			class="pad">Tardy: <span id="tardy_sum" th:text="${tardy}"/></div></td>
 																</tr>
 															</tbody>
 														</table>
@@ -76,7 +76,7 @@
 																<tr>
 																	<td style="vertical-align: top;" align="left">
 																		<table cellspacing="0" cellpadding="0" class="gridTable">
-																			<tbody>
+																			<tbody >
 																				<tr>
 																					<td style="vertical-align: top;" align="left">
 																						<table id="present" 
@@ -274,9 +274,51 @@ function fire_ajax_submit() {
     $.ajax({
     	url: url,
     	success: function(data) {
+    		/*
             var json = "<h4>Ajax Response</h4>&lt;pre&gt;"
                 + JSON.stringify(data, null, 4) + "&lt;/pre&gt;";
             $('#feedback').html(json);
+            */
+            
+            $('#goal').html(data.goal);
+            $('#present_sum').html(data.presentSum);
+            $('#tardy_sum').html(data.tardySum);
+            
+            var dtf = new Intl.DateTimeFormat('en', { year: 'numeric', month: '2-digit', day: '2-digit' }) 
+            
+            var dataSet = new Array();
+            for (i = 0; i < data.presentDates.length; i++) {
+	            var day = new Date(data.presentDates[i].day);
+	            var [{ value: mo },,{ value: da },,{ value: ye }] = dtf.formatToParts(day)
+	            dataSet.push([`${ye}-${mo}-${da}`,data.presentDates[i].value]);
+            }
+            
+            $('#present').DataTable( {
+                "data": dataSet,
+                "columns": [
+                	{ "title": "Dates Present" },
+                	{ "title": "Credit" }
+            	]
+            } );
+            
+            dataSet = new Array();
+            for (i = 0; i < data.tardyDates.length; i++) {
+	            var day = new Date(data.tardyDates[i].day);
+	            var [{ value: mo },,{ value: da },,{ value: ye }] = dtf.formatToParts(day)
+	            dataSet.push([`${ye}-${mo}-${da}`,data.tardyDates[i].value]);
+            }
+            
+            document.getElementById("waiting").style.display = "none";
+            
+            $('#tardy').DataTable( {
+                "data": dataSet,
+                "columns": [
+                	{ "title": "Dates Tardy" },
+                	{ "title": "Credit" }
+            	]
+            } );
+            
+            $('#total').html(data.tardySum+data.presentSum);
     	}
     });
 
