@@ -269,7 +269,7 @@ function loadPage() {
 function fire_ajax_submit() {
 
     var campusId = $("#campusId").html();
-    var url = "/greeting/" + campusId;
+    var url = "@server.servlet.context-path@/greeting/" + campusId;
 
     $.ajax({
     	url: url,
