@@ -27,7 +27,6 @@ import org.springframework.jndi.JndiTemplate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @ComponentScan
-@EnableWebMvc
 @MapperScan(basePackages = "com.ritchey.simple.mapper.chapel", sqlSessionTemplateRef="chapelSqlSessionTemplate")
 @MapperScan(basePackages = "com.ritchey.simple.mapper.powercampus", sqlSessionTemplateRef="powercampusSqlSessionTemplate")
 @SpringBootApplication(exclude={SolrAutoConfiguration.class})
