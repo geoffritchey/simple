@@ -23,6 +23,27 @@
 		<catalina.base>${project.build.directory}</catalina.base>
 		<server.servlet.context-path>/chapelattendance</server.servlet.context-path>
 	</properties>
+	
+	<profiles>
+        <profile>
+            <id>prod</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                 <tomcat.scope>compile</tomcat.scope>
+            </properties>
+        </profile>
+        <profile>
+            <id>emb</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <tomcat.scope>provided</tomcat.scope>
+            </properties>
+        </profile>
+    </profiles>
 
 	<dependencies>
 
@@ -33,11 +54,6 @@
 			<artifactId>spring-security-ldap</artifactId>
 		</dependency>
 		
-				<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
 
 		<dependency>
 			<groupId>com.microsoft.jdbcdriver</groupId>
@@ -60,6 +76,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>${tomcat.scope}</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

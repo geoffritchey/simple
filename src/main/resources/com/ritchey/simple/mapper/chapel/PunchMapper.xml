@@ -424,7 +424,7 @@ group by campusId, se.event, cast(se.starttime as date)
   
     <select id="selectTardy" resultType="java.util.Map" parameterType="map" >
 --tardy query
-select cast(se.starttime as date) as day, min(value) as value
+select cast(cast(se.starttime as date) as varchar) as day, min(value) as value
 from scheduledEvent se
   join event e on se.event = e.id
   left join punch p on p.campusId = #{campusId,jdbcType=VARCHAR} and se.id = eventschedule

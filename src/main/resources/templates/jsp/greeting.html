@@ -288,7 +288,7 @@ function fire_ajax_submit() {
             
             var dataSet = new Array();
             for (i = 0; i < data.presentDates.length; i++) {
-	            var day = new Date(data.presentDates[i].day);
+	            var day = new Date(data.presentDates[i].day + "T00:00:00");
 	            var [{ value: mo },,{ value: da },,{ value: ye }] = dtf.formatToParts(day)
 	            dataSet.push([`${ye}-${mo}-${da}`,data.presentDates[i].value]);
             }
