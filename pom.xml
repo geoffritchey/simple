@@ -55,11 +55,12 @@
 		</dependency>
 		
 
+
 		<dependency>
-			<groupId>com.microsoft.jdbcdriver</groupId>
-			<artifactId>sqljdbc</artifactId>
-			<version>4.2</version>
-		</dependency>
+    <groupId>com.microsoft.sqlserver</groupId>
+    <artifactId>mssql-jdbc</artifactId>
+    <version>9.2.0.jre8</version>
+</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-dbcp -->
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
