@@ -459,7 +459,6 @@ where a.rn = 1
   </select>
   
     <select id="selectTardy" resultType="java.util.Map" parameterType="map" >
---tardy query
 select e.description, cast(se.starttime as date) as day
 	, min(case when se.allcredit = 1 then e.attendanceValue else value end) as value
 from scheduledEvent se
