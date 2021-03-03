@@ -61,6 +61,14 @@
     <artifactId>mssql-jdbc</artifactId>
     <version>9.2.0.jre8</version>
 </dependency>
+<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <version>1.4.200</version>
+		    <scope>test</scope>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-dbcp -->
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>

@@ -95,6 +95,10 @@
 																										__gwt_column="column-gwt-uid-13"
 																										__gwt_header="header-gwt-uid-14">Dates&nbsp;Present</th>
 																									<th colspan="1"
+																										class="header firstHeader"
+																										__gwt_column="column-gwt-uid-13"
+																										__gwt_header="header-gwt-uid-14">Description</th>
+																									<th colspan="1"
 																										class="header lastHeader"
 																										__gwt_column="column-gwt-uid-15"
 																										__gwt_header="header-gwt-uid-16">Credit</th>
@@ -102,6 +106,10 @@
 																							</thead>
 																							<tbody style="">
 																								<tr th:each="present: ${present_dates}" __gwt_row="0" __gwt_subrow="0" class="evenRow">
+																									<td class="cell oddCell firstColumn">
+																										<div style="outline-style: none;"
+																											__gwt_cell="cell-gwt-uid-17" tabindex="0">
+																												<span th:text="${present.get('description')}"/></div></td>
 																									<td class="cell oddCell firstColumn">
 																										<div style="outline-style: none;"
 																											__gwt_cell="cell-gwt-uid-17" tabindex="0">
@@ -160,8 +168,11 @@
 																									<th colspan="1"
 																										class="header firstHeader"
 																										__gwt_column="column-gwt-uid-9"
-																										__gwt_header="header-gwt-uid-10">Dates
-																										Tardy</th>
+																										__gwt_header="header-gwt-uid-10">Dates Tardy</th>
+																									<th colspan="1"
+																										class="header firstHeader"
+																										__gwt_column="column-gwt-uid-9"
+																										__gwt_header="header-gwt-uid-10">Description</th>
 																									<th colspan="1"
 																										class="header lastHeader"
 																										__gwt_column="column-gwt-uid-11"
@@ -170,10 +181,14 @@
 																							</thead>
 																																														<tbody style="">
 																								<tr th:each="tardy: ${tardy_dates}" __gwt_row="0" __gwt_subrow="0" class="evenRow">
+																																																		<td class="cell oddCell firstColumn">
+																									<div style="outline-style: none;"
+																											__gwt_cell="cell-gwt-uid-17" tabindex="0">
+																												<span th:text="${tardy.get('day')}"/></div></td>
 																									<td class="cell oddCell firstColumn">
 																										<div style="outline-style: none;"
 																											__gwt_cell="cell-gwt-uid-17" tabindex="0">
-																												<span th:text="${tardy.get('day')}"/></div></td>
+																												<span th:text="${tardy.get('description')}"/></div></td>
 																									<td class="cell evenCell lastColumn">
 																										<div style="outline-style: none;"
 																											__gwt_cell="cell-gwt-uid-18">
@@ -255,12 +270,11 @@ function loadPage() {
 		
 		$(document).ready(function() {
 		    $('#present').DataTable({
-		    	"order": [ 0,"desc" ]
-		    });
-		} );
-		
-		$(document).ready(function() {
-		    $('#tardy').DataTable({"order": [ 0,"desc" ]});
+		    	 "order": [ 1, "desc" ]
+			});
+			$('#tardy').DataTable({
+				 "order": [ 1, "desc" ]
+			});
 		} );
 	}
   
@@ -279,7 +293,7 @@ function fire_ajax_submit() {
                 + JSON.stringify(data, null, 4) + "&lt;/pre&gt;";
             $('#feedback').html(json);
             */
-            
+
             $('#goal').html(data.goal);
             $('#present_sum').html(data.presentSum);
             $('#tardy_sum').html(data.tardySum);
@@ -290,13 +304,14 @@ function fire_ajax_submit() {
             for (i = 0; i < data.presentDates.length; i++) {
 	            var day = new Date(data.presentDates[i].day + "T00:00:00");
 	            var [{ value: mo },,{ value: da },,{ value: ye }] = dtf.formatToParts(day)
-	            dataSet.push([`${ye}-${mo}-${da}`,data.presentDates[i].value]);
+	            dataSet.push([`${ye}-${mo}-${da}`,data.presentDates[i].description,data.presentDates[i].value]);
             }
             
             $('#present').DataTable( {
                 "data": dataSet,
                 "columns": [
-                	{ "title": "Dates Present" },
+					{ "title": "Dates Present" },
+					{ "title": "Description" },
                 	{ "title": "Credit" }
             	]
             } );
@@ -305,7 +320,7 @@ function fire_ajax_submit() {
             for (i = 0; i < data.tardyDates.length; i++) {
 	            var day = new Date(data.tardyDates[i].day);
 	            var [{ value: mo },,{ value: da },,{ value: ye }] = dtf.formatToParts(day)
-	            dataSet.push([`${ye}-${mo}-${da}`,data.tardyDates[i].value]);
+	            dataSet.push([`${ye}-${mo}-${da}`,data.tardyDates[i].description, data.tardyDates[i].value]);
             }
             
             document.getElementById("waiting").style.display = "none";
@@ -313,7 +328,9 @@ function fire_ajax_submit() {
             $('#tardy').DataTable( {
                 "data": dataSet,
                 "columns": [
-                	{ "title": "Dates Tardy" },
+					
+					{ "title": "Dates Tardy" },
+					{ "title": "Description" },
                 	{ "title": "Credit" }
             	]
             } );

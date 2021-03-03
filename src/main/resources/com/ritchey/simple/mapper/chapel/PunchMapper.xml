@@ -399,51 +399,123 @@
   
     <select id="selectPresent" resultType="java.util.Map" parameterType="map" >
 --present query
-select cast(se.starttime as date) as day, min(case when tardy = 0 then value when se.allcredit = 1 then e.attendanceValue else 0 end) as value
+select e.description, cast(se.starttime as date) as day
+	, min(case when se.allcredit = 1 then e.attendanceValue else value end) as value
 from scheduledEvent se
   join event e on se.event = e.id
   left join punch p on p.campusId = #{campusId,jdbcType=VARCHAR} and se.id = eventschedule
-where case when tardy = 0 then value when se.allcredit = 1 then e.attendanceValue else 0 end &lt;&gt; 0  
+where (tardy is null or tardy = 0)
+	and case when se.allcredit = 1 then e.attendanceValue else value end &lt;&gt; 0  
   and se.starttime &gt;= #{startterm,jdbcType=TIMESTAMP}
-group by campusId, se.event, cast(se.starttime as date)
-order by cast(se.starttime as date) desc
+  and se.split = 0
+group by tardy, e.description, campusId, se.event, cast(se.starttime as date)
+union 
+select a.description, a.day, a.value
+from (
+select tardy, e.description, row_number() over( partition by dbo.week_of_year(se.starttime) order by case when p.campusId is null then 1 else 0 end) as rn, 
+	cast(se.starttime as date) as day
+	, case when se.allcredit = 1 then e.attendanceValue else value end as value
+from scheduledEvent se
+  join event e on se.event = e.id
+  left join punch p on p.campusId = #{campusId,jdbcType=VARCHAR} and se.id = eventschedule
+where (tardy is null or tardy = 0)
+	and case when se.allcredit = 1 then e.attendanceValue else value end  &lt;&gt; 0  
+  and se.starttime &gt;= #{startterm,jdbcType=TIMESTAMP}
+  and se.split = 1
+) a
+where a.rn = 1
+order by day desc
   </select>
   
 <select id="selectPresentCount" resultType="java.util.Map" parameterType="map" >
 select count(day) as count, coalesce(sum(value), 0) as total
 from (
-  select cast(se.starttime as date) as day, min(case when tardy = 0 then value when se.allcredit = 1 then e.attendanceValue else 0 end) as value
+select e.description, cast(se.starttime as date) as day
+	, min(case when se.allcredit = 1 then e.attendanceValue else value end) as value
 from scheduledEvent se
   join event e on se.event = e.id
   left join punch p on p.campusId = #{campusId,jdbcType=VARCHAR} and se.id = eventschedule
-where case when tardy = 0 then value when se.allcredit = 1 then e.attendanceValue else 0 end &lt;&gt; 0  
+where (tardy is null or tardy = 0)
+	and case when se.allcredit = 1 then e.attendanceValue else value end &lt;&gt; 0  
   and se.starttime &gt;= #{startterm,jdbcType=TIMESTAMP}
-group by campusId, se.event, cast(se.starttime as date)
-) att
+  and se.split = 0
+group by tardy, e.description, campusId, se.event, cast(se.starttime as date)
+union 
+select a.description, a.day, a.value
+from (
+select tardy, e.description, row_number() over( partition by dbo.week_of_year(se.starttime) order by case when p.campusId is null then 1 else 0 end) as rn, 
+	cast(se.starttime as date) as day
+	, case when se.allcredit = 1 then e.attendanceValue else value end as value
+from scheduledEvent se
+  join event e on se.event = e.id
+  left join punch p on p.campusId = #{campusId,jdbcType=VARCHAR} and se.id = eventschedule
+where (tardy is null or tardy = 0)
+	and case when se.allcredit = 1 then e.attendanceValue else value end  &lt;&gt; 0  
+  and se.starttime &gt;= #{startterm,jdbcType=TIMESTAMP}
+  and se.split = 1
+) a
+where a.rn = 1
+) a
   </select>
   
     <select id="selectTardy" resultType="java.util.Map" parameterType="map" >
 --tardy query
-select cast(cast(se.starttime as date) as varchar) as day, min(value) as value
+select e.description, cast(se.starttime as date) as day
+	, min(case when se.allcredit = 1 then e.attendanceValue else value end) as value
 from scheduledEvent se
   join event e on se.event = e.id
   left join punch p on p.campusId = #{campusId,jdbcType=VARCHAR} and se.id = eventschedule
 where tardy = 1
-  and se.starttime  &gt;= #{startterm,jdbcType=TIMESTAMP}
-group by campusId, se.event, cast(se.starttime as date)
-order by cast(se.starttime as date) desc
+	and case when se.allcredit = 1 then e.attendanceValue else value end &lt;&gt; 0  
+  and se.starttime &gt;= #{startterm,jdbcType=TIMESTAMP}
+  and se.split = 0
+group by tardy, e.description, campusId, se.event, cast(se.starttime as date)
+union 
+select a.description, a.day, a.value
+from (
+select tardy, e.description, row_number() over( partition by dbo.week_of_year(se.starttime) order by case when p.campusId is null then 1 else 0 end) as rn, 
+	cast(se.starttime as date) as day
+	, case when se.allcredit = 1 then e.attendanceValue else value end as value
+from scheduledEvent se
+  join event e on se.event = e.id
+  left join punch p on p.campusId = #{campusId,jdbcType=VARCHAR} and se.id = eventschedule
+where tardy = 1
+	and case when se.allcredit = 1 then e.attendanceValue else value end  &lt;&gt; 0  
+  and se.starttime &gt;= #{startterm,jdbcType=TIMESTAMP}
+  and se.split = 1
+) a
+where a.rn = 1
+order by day desc
   </select>
   
 <select id="selectTardyCount" resultType="java.util.Map" parameterType="map" >
 select count(day) as count, coalesce(sum(value), 0) as total
 from (
-select cast(se.starttime as date) as day, min(value) as value
+select e.description, cast(se.starttime as date) as day
+	, min(case when se.allcredit = 1 then e.attendanceValue else value end) as value
 from scheduledEvent se
   join event e on se.event = e.id
   left join punch p on p.campusId = #{campusId,jdbcType=VARCHAR} and se.id = eventschedule
 where tardy = 1
-  and se.starttime  &gt;= #{startterm,jdbcType=TIMESTAMP}
-group by campusId, se.event, cast(se.starttime as date)
+	and case when se.allcredit = 1 then e.attendanceValue else value end &lt;&gt; 0  
+  and se.starttime &gt;= #{startterm,jdbcType=TIMESTAMP}
+  and se.split = 0
+group by tardy, e.description, campusId, se.event, cast(se.starttime as date)
+union 
+select a.description, a.day, a.value
+from (
+select tardy, e.description, row_number() over( partition by dbo.week_of_year(se.starttime) order by case when p.campusId is null then 1 else 0 end) as rn, 
+	cast(se.starttime as date) as day
+	, case when se.allcredit = 1 then e.attendanceValue else value end as value
+from scheduledEvent se
+  join event e on se.event = e.id
+  left join punch p on p.campusId = #{campusId,jdbcType=VARCHAR} and se.id = eventschedule
+where tardy = 1
+	and case when se.allcredit = 1 then e.attendanceValue else value end  &lt;&gt; 0  
+  and se.starttime &gt;= #{startterm,jdbcType=TIMESTAMP}
+  and se.split = 1
+) a
+where a.rn = 1
 ) att
   </select>
 </mapper>
