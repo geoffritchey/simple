@@ -18,3 +18,4 @@ To create a war file
 
 	mvn package -Pemb
 
+install both as chapelattendance and chapel.
